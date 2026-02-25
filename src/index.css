@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.input {
+  @apply w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500;
+}
+
+.label {
+  @apply block text-sm font-medium text-gray-600 mb-1;
+}
+
+@media print {
+  body {
+    background: white;
+  }
+
+  .print\:hidden {
+    display: none !important;
+  }
+
+  @page {
+    size: A4;
+    margin: 10mm;
+  }
+}
+
+
+@media print {
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: white !important;
+  }
+
+  /* Remove browser-added space */
+  @page {
+    size: A4;
+    margin: 8mm;
+  }
+
+  /* Hide UI */
+  .print\:hidden {
+    display: none !important;
+  }
+
+  /* Prevent card break */
+  .certificate-card {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}

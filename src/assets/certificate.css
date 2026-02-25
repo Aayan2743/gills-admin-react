@@ -1,0 +1,122 @@
+/* ===============================
+   GLOBAL
+================================ */
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ===============================
+   SCREEN PREVIEW
+================================ */
+.certificate-page {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 360px));
+  gap: 20px;
+  justify-content: center;
+}
+
+/* CARD (SCREEN) */
+.certificate-card {
+  width: 360px;
+  height: 230px;
+  border: 1px solid #777;
+  padding: 8px 10px;
+  font-size: 11px;
+  background: #fff;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* HEADER */
+.cert-header img {
+  height: 40px;
+  margin-bottom: 6px;
+}
+
+/* ROWS */
+.cert-row {
+  display: flex;
+  margin-bottom: 3px;
+}
+
+.cert-row .label {
+  width: 90px;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.cert-row .value {
+  flex: 1;
+}
+
+/* DESCRIPTION */
+.description {
+  font-size: 11px;
+  line-height: 14px;
+  margin-bottom: 6px;
+}
+
+/* CONTENT */
+.cert-content {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+/* IMAGE BOX */
+.cert-image {
+  width: 72px;
+  height: 72px;
+  border: 1px solid #aaa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cert-image img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.no-image {
+  font-size: 9px;
+  color: #aaa;
+}
+
+/* ===============================
+   PRINT SETTINGS
+================================ */
+@page {
+  size: A4;
+  margin: 12mm;
+}
+
+@media print {
+  body {
+    margin: 0;
+    background: white;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .print\:hidden {
+    display: none !important;
+  }
+
+  .certificate-page {
+    grid-template-columns: repeat(3, 90mm);
+    gap: 8mm;
+    justify-content: start;
+  }
+
+  .certificate-card {
+    width: 90mm;
+    height: 55mm;
+    font-size: 10px;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+}
