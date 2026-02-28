@@ -62,10 +62,8 @@ export default function EditGemJobCard() {
         comments: data.comments || "",
       });
 
-      if (data.image) {
-        setPreview(
-          `${import.meta.env.VITE_API_BASE_URL}/gil_images/${data.image}`
-        );
+      if (data.image_url) {
+        setPreview(data.image_url);
       }
     } catch (err) {
       console.error("Error loading job card", err);
@@ -88,61 +86,76 @@ export default function EditGemJobCard() {
   };
 
   /* ================= SUBMIT ================= */
-const handleSubmit = async () => {
-  setLoading(true);
+  const handleSubmit = async () => {
+    setLoading(true);
 
-  const fd = new FormData();
-  Object.entries(form).forEach(([key, value]) =>
-    fd.append(key, value ?? "")
-  );
-  if (image) fd.append("image", image);
+    const fd = new FormData();
+    Object.entries(form).forEach(([key, value]) => fd.append(key, value ?? ""));
+    if (image) fd.append("image", image);
 
-  try {
-    if (id) {
-      await api.post(
-        `/admin/update-gemstone-jobcards/${id}`,
-        fd,
-        { headers: { "Content-Type": "multipart/form-data" } }
-      );
-      alert("Job card updated successfully");
-    } else {
-      await api.post(
-        `/admin/gemstone-jobcards`,
-        fd,
-        { headers: { "Content-Type": "multipart/form-data" } }
-      );
-      alert("Job card created successfully");
+    try {
+      if (id) {
+        await api.post(`/admin/update-gemstone-jobcards/${id}`, fd, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+        alert("Job card updated successfully");
+      } else {
+        await api.post(`/admin/gemstone-jobcards`, fd, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+        alert("Job card created successfully");
+      }
+
+      navigate(-1);
+    } catch (err) {
+      if (err.response?.status === 422) {
+        console.error("Validation errors:", err.response.data.errors);
+        alert("Validation error");
+      } else {
+        console.error(err);
+        alert("Something went wrong");
+      }
     }
 
-    navigate(-1);
-  } catch (err) {
-    if (err.response?.status === 422) {
-      console.error("Validation errors:", err.response.data.errors);
-      alert("Validation error");
-    } else {
-      console.error(err);
-      alert("Something went wrong");
-    }
-  }
-
-  setLoading(false);
-};
-
+    setLoading(false);
+  };
 
   return (
     <div className="max-w-4xl mx-auto bg-white p-6 rounded-xl shadow space-y-6">
-      <h2 className="font-semibold text-xl border-b pb-3">
-        ✏️ Gem Job Card
-      </h2>
+      <h2 className="font-semibold text-xl border-b pb-3">✏️ Gem Job Card</h2>
 
       {/* ================= FORM GRID ================= */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-        <Input label="Confirm ID" name="confirmid" value={form.confirmid} onChange={handleChange} />
-        <Input label="Gem Job Card Number" name="gjobcardid" value={form.gjobcardid} onChange={handleChange} />
-        <Input label="Service" name="service" value={form.service} onChange={handleChange} />
-        <Input label="Species" name="species" value={form.species} onChange={handleChange} />
-        <Input label="Variety" name="variety" value={form.variety} onChange={handleChange} />
+        <Input
+          label="Confirm ID"
+          name="confirmid"
+          value={form.confirmid}
+          onChange={handleChange}
+        />
+        <Input
+          label="Gem Job Card Number"
+          name="gjobcardid"
+          value={form.gjobcardid}
+          onChange={handleChange}
+        />
+        <Input
+          label="Service"
+          name="service"
+          value={form.service}
+          onChange={handleChange}
+        />
+        <Input
+          label="Species"
+          name="species"
+          value={form.species}
+          onChange={handleChange}
+        />
+        <Input
+          label="Variety"
+          name="variety"
+          value={form.variety}
+          onChange={handleChange}
+        />
 
         {/* CUT */}
         <div>
@@ -162,9 +175,26 @@ const handleSubmit = async () => {
           </select>
         </div>
 
-        <Input label="Carat" name="carat" type="number" step="0.01" value={form.carat} onChange={handleChange} />
-        <Input label="Measure" name="measure" value={form.measure} onChange={handleChange} />
-        <Input label="Transparency" name="transperancy" value={form.transperancy} onChange={handleChange} />
+        <Input
+          label="Carat"
+          name="carat"
+          type="number"
+          step="0.01"
+          value={form.carat}
+          onChange={handleChange}
+        />
+        <Input
+          label="Measure"
+          name="measure"
+          value={form.measure}
+          onChange={handleChange}
+        />
+        <Input
+          label="Transparency"
+          name="transperancy"
+          value={form.transperancy}
+          onChange={handleChange}
+        />
 
         {/* STAMPED */}
         <Textarea
@@ -202,7 +232,10 @@ const handleSubmit = async () => {
 
       {/* ================= ACTIONS ================= */}
       <div className="flex justify-end gap-4 pt-4 border-t">
-        <button onClick={() => navigate(-1)} className="px-6 py-2 rounded-lg border">
+        <button
+          onClick={() => navigate(-1)}
+          className="px-6 py-2 rounded-lg border"
+        >
           Cancel
         </button>
         <button

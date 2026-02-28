@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 
 import { ImageIcon, Pencil } from "lucide-react";
 
-
 /* =====================================================
    MAIN COMPONENT
 ===================================================== */
@@ -14,28 +13,38 @@ export default function JewelleryJobCard() {
   return (
     <div className="space-y-6">
       <h1 className="text-xl font-semibold flex items-center gap-2">
-        📁 Jewellery Job Card
+        📁 Jewellery Job Card - (Diamond Jewellery Certification, Soltaire
+        Diamond Jewellery Certification)
       </h1>
 
       {/* TABS */}
       <div className="flex gap-2 border-b">
-        <TabButton active={activeTab === "entry"} onClick={() => setActiveTab("entry")}>
+        <TabButton
+          active={activeTab === "entry"}
+          onClick={() => setActiveTab("entry")}
+        >
           Job Card Entry
         </TabButton>
-        <TabButton active={activeTab === "list"} onClick={() => setActiveTab("list")}>
+        <TabButton
+          active={activeTab === "list"}
+          onClick={() => setActiveTab("list")}
+        >
           Job Card List
         </TabButton>
-        <TabButton active={activeTab === "image"} onClick={() => setActiveTab("image")}>
+        <TabButton
+          active={activeTab === "image"}
+          onClick={() => setActiveTab("image")}
+        >
           Image Upload
         </TabButton>
 
-         <a
-        href="/excels/one.csv"   // file inside public folder
-        download
-        className="ml-auto px-4 py-2 text-sm bg-green-600 text-white rounded hover:bg-green-700"
-      >
-        Download Excel
-      </a>
+        <a
+          href="/excels/one.csv" // file inside public folder
+          download
+          className="ml-auto px-4 py-2 text-sm bg-green-600 text-white rounded hover:bg-green-700"
+        >
+          Download Excel
+        </a>
       </div>
 
       {activeTab === "entry" && <JobCardEntry />}
@@ -93,7 +102,11 @@ function JobCardEntry() {
       <h2 className="font-semibold text-lg">📄 Job Card Entry</h2>
 
       <div className="flex gap-4">
-        <input type="file" accept=".csv" onChange={(e) => setFile(e.target.files[0])} />
+        <input
+          type="file"
+          accept=".csv"
+          onChange={(e) => setFile(e.target.files[0])}
+        />
         <button
           onClick={submitCSV}
           disabled={loading}
@@ -150,7 +163,10 @@ function JobCardList_old() {
           onChange={(e) => setJobcardid(e.target.value)}
           className="border px-3 py-2 rounded"
         />
-        <button onClick={() => fetchData(1)} className="bg-gray-800 text-white rounded px-4">
+        <button
+          onClick={() => fetchData(1)}
+          className="bg-gray-800 text-white rounded px-4"
+        >
           Search
         </button>
         <button
@@ -203,14 +219,22 @@ function JobCardList_old() {
 
       {/* PAGINATION */}
       <div className="flex justify-end gap-2">
-        <button disabled={page === 1} onClick={() => fetchData(page - 1)}>Prev</button>
-        <span>Page {page} / {lastPage}</span>
-        <button disabled={page === lastPage} onClick={() => fetchData(page + 1)}>Next</button>
+        <button disabled={page === 1} onClick={() => fetchData(page - 1)}>
+          Prev
+        </button>
+        <span>
+          Page {page} / {lastPage}
+        </span>
+        <button
+          disabled={page === lastPage}
+          onClick={() => fetchData(page + 1)}
+        >
+          Next
+        </button>
       </div>
     </div>
   );
 }
-
 
 function JobCardList() {
   const navigate = useNavigate();
@@ -250,7 +274,7 @@ function JobCardList() {
   /* ---------------- CHECKBOX HANDLERS ---------------- */
   const toggleRow = (id) => {
     setSelectedIds((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
     );
   };
 
@@ -342,7 +366,11 @@ function JobCardList() {
       {/* ACTION BAR */}
       <div className="flex flex-wrap items-center gap-6 bg-gray-100 p-4 rounded">
         <label className="flex items-center gap-2">
-          <input type="checkbox" checked={imageCert} onChange={() => setImageCert(!imageCert)} />
+          <input
+            type="checkbox"
+            checked={imageCert}
+            onChange={() => setImageCert(!imageCert)}
+          />
           Image Certificate
         </label>
 
@@ -376,7 +404,11 @@ function JobCardList() {
           <thead className="bg-[#b08a5a] text-white">
             <tr>
               <th className="p-3">
-                <input type="checkbox" checked={selectAll} onChange={toggleSelectAll} />
+                <input
+                  type="checkbox"
+                  checked={selectAll}
+                  onChange={toggleSelectAll}
+                />
               </th>
               <th className="p-3">#</th>
               <th className="p-3">Confirmation</th>
@@ -414,11 +446,8 @@ function JobCardList() {
                 >
                   Delete
                 </td>
-                 <td
-                  className="p-3 text-red-600 cursor-pointer"
-               
-                >
-                 {r.big_j==1 ? "Yes" : "No"}
+                <td className="p-3 text-red-600 cursor-pointer">
+                  {r.big_j == 1 ? "Yes" : "No"}
                 </td>
               </tr>
             ))}
@@ -442,7 +471,10 @@ function JobCardList() {
         <span>
           Page {page} / {lastPage}
         </span>
-        <button disabled={page === lastPage} onClick={() => fetchData(page + 1)}>
+        <button
+          disabled={page === lastPage}
+          onClick={() => fetchData(page + 1)}
+        >
           Next
         </button>
       </div>
@@ -454,8 +486,7 @@ function JobCardList() {
    IMAGE UPLOAD (BULK + PAGINATION)
 ===================================================== */
 
-
- function JobCardImageUpload() {
+function JobCardImageUpload() {
   const navigate = useNavigate();
 
   const [rows, setRows] = useState([]);
@@ -541,9 +572,7 @@ function JobCardList() {
                 <td className="p-3">
                   <input
                     type="file"
-                    onChange={(e) =>
-                      handleFileChange(r.id, e.target.files[0])
-                    }
+                    onChange={(e) => handleFileChange(r.id, e.target.files[0])}
                   />
                 </td>
 

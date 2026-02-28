@@ -35,7 +35,8 @@ import DashboardLayout from "./layouts/DashboardLayout";
 import EditJobCard from "./pages/EditJobCard";
 import CertificatePreview from "./pages/CertificatePreview";
 import EditGemJobCard from "./pages/EditGemJobCard";
-
+import GemstoneCertificatePreview from "./pages/GemstoneCertificatePreview";
+import EditDiamondJobCard from "./pages/EditDiamondJobCard";
 
 export default function App() {
   return (
@@ -88,17 +89,34 @@ export default function App() {
           <Route path="/diamond-job-card" element={<DimondJobCard />} />
 
           <Route path="/edit-job-card/:id" element={<EditJobCard />} />
-          <Route path="/edit-gem-stone-job-card/:id" element={<EditGemJobCard />} />
+          <Route
+            path="/edit-gem-stone-job-card/:id"
+            element={<EditGemJobCard />}
+          />
 
-
+          <Route
+            path="/edit-diamond-jobcard/:id"
+            element={<EditDiamondJobCard />}
+          />
 
           <Route
             path="/confirmation-print/:id"
             element={<ConfirmationPrint />}
           />
 
-           <Route path="/certificates/preview" element={<CertificatePreview />} />
-           <Route path="/certificates/big-preview" element={<BigCertificate />} />
+          <Route
+            path="/certificates/preview"
+            element={<CertificatePreview />}
+          />
+          <Route
+            path="/certificates/big-preview"
+            element={<BigCertificate />}
+          />
+
+          <Route
+            path="/gemstone/certificates/preview"
+            element={<GemstoneCertificatePreview />}
+          />
 
           <Route path="/rate-card" element={<RateCard />} />
           {/* <Route path="/clarity" element={<Clarity />} />
