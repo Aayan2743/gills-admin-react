@@ -352,50 +352,241 @@ function JobCardList() {
   );
 }
 
+// function JobCardImageUpload() {
+//   const [jobcards, setJobcards] = useState([]);
+//   const [loadingId, setLoadingId] = useState(null);
+
+//   useEffect(() => {
+//     fetchJobcards();
+//   }, []);
+
+//   const fetchJobcards = async () => {
+//     const res = await api.get("/admin/diamond-jobcards");
+//     setJobcards(res.data.data || []);
+//   };
+
+//   const handleImageUpload = async (e, id) => {
+//     const file = e.target.files[0];
+//     if (!file) return;
+
+//     const formData = new FormData();
+//     formData.append("id", id);
+//     formData.append("image", file);
+
+//     try {
+//       setLoadingId(id);
+
+//       await api.post("/admin/diamond-jobcards/image-upload", formData, {
+//         headers: { "Content-Type": "multipart/form-data" },
+//       });
+
+//       fetchJobcards();
+//     } catch (err) {
+//       console.error(err);
+//       alert("Upload failed");
+//     } finally {
+//       setLoadingId(null);
+//     }
+//   };
+
+//   return (
+//     <div className="space-y-4">
+//       <h2 className="font-semibold text-lg">🖼 Bulk Diamond Image Upload</h2>
+
+//       <div className="bg-white shadow rounded overflow-x-auto">
+//         <table className="w-full text-sm">
+//           <thead className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white">
+//             <tr>
+//               <th className="p-3">#</th>
+//               <th className="p-3">Confirmation</th>
+//               <th className="p-3">Jobcard</th>
+//               <th className="p-3">Current Image</th>
+//               <th className="p-3">Upload New</th>
+//             </tr>
+//           </thead>
+//           <tbody>
+//             {jobcards.map((item, index) => (
+//               <tr key={item.djobcard_id} className="border-t">
+//                 <td className="p-3">{index + 1}</td>
+//                 <td className="p-3 font-semibold">{item.confirmid}</td>
+//                 <td className="p-3">{item.djobcardid}</td>
+
+//                 {/* CURRENT IMAGE */}
+//                 <td className="p-3">
+//                   {item.image ? (
+//                     <img
+//                       src={`http://localhost/storage/diamond/${item.image}`}
+//                       alt="Current"
+//                       className="h-16 w-16 object-cover rounded shadow"
+//                     />
+//                   ) : (
+//                     <span className="text-gray-400">No Image</span>
+//                   )}
+//                 </td>
+
+//                 {/* UPLOAD NEW */}
+//                 <td className="p-3">
+//                   <input
+//                     type="file"
+//                     onChange={(e) => handleImageUpload(e, item.djobcard_id)}
+//                   />
+//                   {loadingId === item.djobcard_id && (
+//                     <p className="text-xs text-blue-600 mt-1">Uploading...</p>
+//                   )}
+//                 </td>
+//               </tr>
+//             ))}
+//           </tbody>
+//         </table>
+//       </div>
+//     </div>
+//   );
+// }
+
 function JobCardImageUpload() {
+  const [jobcards, setJobcards] = useState([]);
+  const [selectedFiles, setSelectedFiles] = useState({});
+  const [loading, setLoading] = useState(false);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [lastPage, setLastPage] = useState(1);
+
+  useEffect(() => {
+    fetchJobcards(currentPage);
+  }, [currentPage]);
+
+  const fetchJobcards = async (page = 1) => {
+    const res = await api.get(`/admin/diamond-jobcards?page=${page}`);
+
+    setJobcards(res.data.data || []);
+    setCurrentPage(res.data.current_page);
+    setLastPage(res.data.last_page);
+  };
+
+  const handleFileChange = (e, id) => {
+    setSelectedFiles((prev) => ({
+      ...prev,
+      [id]: e.target.files[0],
+    }));
+  };
+
+  const handleBulkUpload = async () => {
+    if (Object.keys(selectedFiles).length === 0) {
+      alert("Please select at least one image");
+      return;
+    }
+
+    const formData = new FormData();
+
+    Object.keys(selectedFiles).forEach((id) => {
+      formData.append("jobid[]", id);
+      formData.append("img[]", selectedFiles[id]);
+    });
+
+    try {
+      setLoading(true);
+
+      const res = await api.post(
+        "/admin/diamond-jobcards/multi-image-upload",
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } },
+      );
+
+      alert(res.data.message || "Images Uploaded Successfully");
+
+      setSelectedFiles({}); // clear selected files
+      fetchJobcards(currentPage); // refresh current page
+    } catch (err) {
+      alert("Upload failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="space-y-4">
-      <h2 className="font-semibold text-lg">🖼 Dimond Job Card Image Upload</h2>
+    <div className="space-y-6">
+      <h2 className="font-semibold text-xl flex items-center gap-2">
+        🖼 Bulk Diamond Image Upload
+      </h2>
 
-      {/* SEARCH */}
-      <div className="flex gap-4 bg-gray-50 p-4 rounded">
-        <input
-          placeholder="Old Confirmation Number"
-          className="border px-3 py-2 rounded"
-        />
-        <button className="bg-gray-800 text-white px-4 py-2 rounded">
-          Submit
-        </button>
-      </div>
-
-      {/* TABLE */}
       <div className="bg-white shadow rounded overflow-x-auto">
         <table className="w-full text-sm">
-          <thead className="bg-[#b08a5a] text-white">
+          <thead className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white">
             <tr>
-              <th className="p-3">SNo</th>
-              <th className="p-3">Confirmation No</th>
-              <th className="p-3">Jobcard Id</th>
-              <th className="p-3">Edit</th>
-              <th className="p-3">File Upload</th>
-              <th className="p-3">Filename</th>
+              <th className="p-3 text-left">#</th>
+              <th className="p-3 text-left">Confirmation</th>
+              <th className="p-3 text-left">Jobcard</th>
+              <th className="p-3 text-center">Current Image</th>
+              <th className="p-3 text-left">Upload New</th>
             </tr>
           </thead>
           <tbody>
-            {[1, 2, 3].map((i) => (
-              <tr key={i} className="border-t">
-                <td className="p-3">{i}</td>
-                <td className="p-3">GILCNF77{i}</td>
-                <td className="p-3">GILHJ309{i}K</td>
-                <td className="p-3 text-blue-600 cursor-pointer">edit</td>
-                <td className="p-3">
-                  <input type="file" />
+            {jobcards.map((item, index) => (
+              <tr key={item.djobcard_id} className="border-t hover:bg-gray-50">
+                <td className="p-3">{index + 1}</td>
+                <td className="p-3 font-medium">{item.confirmid}</td>
+                <td className="p-3">{item.djobcardid}</td>
+
+                {/* CURRENT IMAGE */}
+                <td className="p-3 text-center">
+                  {item.image_url ? (
+                    <img
+                      src={item.image_url}
+                      alt="current"
+                      className="h-16 w-16 object-cover rounded shadow mx-auto"
+                    />
+                  ) : (
+                    <span className="text-gray-400 text-sm">No Image</span>
+                  )}
                 </td>
-                <td className="p-3 text-gray-500">—</td>
+
+                {/* FILE INPUT */}
+                <td className="p-3">
+                  <input
+                    type="file"
+                    onChange={(e) => handleFileChange(e, item.djobcard_id)}
+                    className="text-sm"
+                  />
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
+      </div>
+
+      {/* BUTTON BOTTOM RIGHT */}
+      <div className="flex justify-end">
+        <button
+          onClick={handleBulkUpload}
+          disabled={loading}
+          className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-6 py-2 rounded-lg shadow hover:opacity-90"
+        >
+          {loading ? "Uploading..." : "Upload Selected Images"}
+        </button>
+      </div>
+
+      <div className="flex justify-between items-center mt-4">
+        <p className="text-sm text-gray-500">
+          Page {currentPage} of {lastPage}
+        </p>
+
+        <div className="flex gap-2">
+          <button
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage(currentPage - 1)}
+            className="px-4 py-1 border rounded disabled:opacity-50"
+          >
+            Prev
+          </button>
+
+          <button
+            disabled={currentPage === lastPage}
+            onClick={() => setCurrentPage(currentPage + 1)}
+            className="px-4 py-1 border rounded disabled:opacity-50"
+          >
+            Next
+          </button>
+        </div>
       </div>
     </div>
   );
